@@ -19,9 +19,7 @@ do
     		cat <<EOF > $rootfs/etc/rc.local
 #!/bin/sh -x
 sleep 5
-export http_proxy="http://192.168.1.70:3128"
 apt-get update
-apt-get -y install apache2
 ifconfig eth0
 EOF
 		lxc-start --define lxc.console=/var/log/lxc/$container -d -n $container

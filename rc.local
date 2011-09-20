@@ -1,0 +1,16 @@
+#!/bin/bash -x
+
+while [[ "$GW" == "" ]]
+do
+        $((++tries))
+        echo "Waiting for default route to come up"
+        sleep 3
+        GW=$(/sbin/ip route | awk '/default/ { print $3 }')
+        [ $tries eq 5 ] && break
+done
+
+ping -w 5 $GW
+apt-get update > /install.log
+apt-get upgrade >> /install.log
+cp /install.log /boot.log
+

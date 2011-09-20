@@ -1,0 +1,23 @@
+#!/bin/bash
+
+for i in {1..5}
+do
+	container=debug$i
+
+	if [ "$1" == "destroy" ]
+	then
+		echo "Stopping $container"
+		lxc-stop -n $container
+		
+		echo "Destroying $container"
+		lxc-destroy -n $container
+	else
+		echo "Creating $container"
+		lxc-create -n $container -t mynatty -f nat.conf
+		rootfs=/var/lib/lxc/$container/rootfs
+
+		[ -f rc.local ] && cp rc.local $rootfs/etc/rc.local
+		mkdir -p /var/log/lxc/$container
+		lxc-start -l DEBUG -o /var/log/lxc/$container/start.log --define lxc.console=/var/log/lxc/$container/console.log -d -n $container
+	fi
+done

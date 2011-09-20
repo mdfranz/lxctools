@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [[ $# -lt 2 ]]
+then
+	echo "#lxc-build <create|destroy> <container> [template] [dhcp|br0]"
+	exit
+fi
+exit
+	
+		echo "Creating $container"
+		lxc-create -n $container -t mynatty -f nat.conf
+		rootfs=/var/lib/lxc/$container/rootfs
+
+		[ -f rc.local ] && cp rc.local $rootfs/etc/rc.local
+		mkdir -p /var/log/lxc/$container
+		lxc-start -l DEBUG -o /var/log/lxc/$container/start.log --define lxc.console=/var/log/lxc/$container/console.log -d -n $container
